@@ -1,0 +1,22 @@
+
+from tkinter import *
+ 
+window = Tk()
+ 
+window.title("Welcome to LikeGeeks app")
+ 
+window.geometry('350x200') 
+def numberplate():
+    lbl.configure(text="Button was clicked !!")
+def gasplate():
+lbl.configure(text="hello")
+def gasplate():
+lbl.configure(text="hi")
+
+btn = Button(window, text="number plate", command=numbermeter)
+btn1 = Button(window, text="gas meter ", command=gasmeter)
+btn2 = Button(window, text="water meter", command=watermeter)
+btn.grid(column=0, row=0)
+btn1.grid(column=0,row=1)
+btn2.grid(column=0,row=2) 
+window.mainloop()

@@ -3,6 +3,11 @@ import java.io.FileReader;
 import java.util.Scanner;
 
 public class DVR {
+    static int ii;
+    DVR(int i)
+    {
+        ii=i;
+    }
     static int graph[][];
     static int N,E;
     static RT node[];
@@ -53,14 +58,14 @@ public class DVR {
         E=sc.nextInt();
         graph=new int[N][N];
         initG();
-            for(int j=0;j<E;j++)
-            {
-                s=sc.nextInt();
-                d=sc.nextInt();
-                c=sc.nextInt();
-                graph[s][d]=c;
-                graph[d][s]=c;
-            }
+        for(int j=0;j<E;j++)
+        {
+            s=sc.nextInt();
+            d=sc.nextInt();
+            c=sc.nextInt();
+            graph[s][d]=c;
+            graph[d][s]=c;
+        }
 
     }
 
@@ -76,46 +81,63 @@ public class DVR {
             System.out.println();
         }
     }
-
+    static int p=0;
     public static void printTab(String msg)
     {
-        System.out.println(msg);
-        for(int i=0;i<N;i++)
+            System.out.println(msg);
+            for (int i = 0; i < N; i++) {
+                System.out.println("\nRT at " + i + "\n");
+                for (int j = 0; j < N; j++) {
+                    System.out.println(j + "  " + node[i].dist[j] + "  " + node[i].via[j]);
+                }
+            }
+    }
+
+    public static void xchg(int i)
+    {
+        //from node i
+        System.out.println("to node"+i);
+        for(int j=0;j<N;j++)//sending its routing vector to j
         {
-            System.out.println("\nRT at "+i+"\n");
-            for(int j=0;j<N;j++)
+            if(i==j) continue;
+            if(node[i].dist[j]!=99)
             {
-                System.out.println(j+"  "+node[i].dist[j]+"  "+node[i].via[j]);
+                //node[i].update(node[j].dist,j);
+                int p[]=new int[N];
+                for(int k=0;k<N;k++)//for calulating new distance
+                {
+                    p[k]=node[j].dist[k]+node[j].dist[i];
+                }
+                node[i].push(p,j);
             }
         }
     }
 
-    public static void main(String[] args) throws Exception
-    {
-        constructGraph();
-        //uploadGraph();
+    public static void main(String[] args) throws Exception {
+        //constructGraph();
+        uploadGraph();
         printGraph();
-        node=new RT[N];
-        for(int i=0;i<N;i++)
-        {
-            node[i]=new RT(i,N,graph);
+        node = new RT[N];
+        for (int i = 0; i < N; i++) {
+            node[i] = new RT(i, N, graph);
         }
         printTab("printing initial tables");
 
 
         //passing routing vectors
-        for(int i=0;i<N;i++)//node i
+        for (int j = 0; j < N; j++)
         {
-            for(int j=0;j<N;j++)//sending its routing vector to j
+            for (int i = 0; i < N; i++)
             {
-                if(node[i].dist[j]==99)
-                {
-                    continue;
-                }
-                node[j].update(node[i].dist,i);
+                xchg(i);
+                node[i].update();
             }
+            for(int i=0;i<N;i++)
+            {
+                node[i].newdist_to_dist();
+            }
+            printTab("printing tables after convergence "+(j+1));
         }
-        printTab("printing tables after convergence");
 
     }
 }
